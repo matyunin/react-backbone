@@ -1,0 +1,19 @@
+{
+  "name": "react-backbone",
+  "version": "0.0.0",
+  "description": "Sandbox: react with backbone",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/matyunin/react-backbone.git"
+  },
+  "author": "Mikhail Matyunin <free.all.bums@gmail.com>",
+  "license": "GPLv2",
+  "bugs": {
+    "url": "https://github.com/matyunin/react-backbone/issues"
+  },
+  "homepage": "https://github.com/matyunin/react-backbone"
+}
