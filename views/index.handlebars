@@ -1,37 +1,111 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8"/>
-        <title>Sandbox: react + backbone</title>
-    </head>
-    <body>
-        <div id="container"></div>
+<head>
+    <meta charset="utf-8"/>
+    <title>Sandbox: react + backbone</title>
+</head>
+<body>
+<div id="container"></div>
 
-        <script src="/bower/jquery/dist/jquery.js"></script>
-        <script src="/bower/underscore/underscore.js"></script>
-        <script src="/bower/backbone/backbone.js"></script>
-        <script src="/bower/react/react-with-addons.js"></script>
-    <script src="https://fb.me/JSXTransformer-0.13.3.js"></script>
-        <script src="/app.js"></script>
+<script src="/bower/jquery/dist/jquery.js"></script>
+<script src="/bower/underscore/underscore.js"></script>
+<script src="/bower/backbone/backbone.js"></script>
+<script src="/bower/react/react-with-addons.js"></script>
+<script src="/bower/react/JSXTransformer.js"></script>
+<script src="/app.js"></script>
 
-        <script type="text/jsx">
-              var ArticlesList = React.createClass({
-                  handleClick: function () {
-                      alert('Hello!');
-                  },
-                  render: function () {
-                      return (
-                          <a href="#" onClick={this.handleClick}>Do something!</a>
-                      );
-                  }
-              });
+<script type="text/jsx">
+    var RxArticle = React.createClass({
+        render: function () {
+            if ($.isEmptyObject(this.props.article)) {
+                return false;
+            }
 
-              React.render(
-                  <ArticlesList
-                    articles={articles.toJSON()}
-                  />,
-                  document.getElementById('container')
-              );
-            </script>
-    </body>
+            return (<li><b>{this.props.article.author}</b> {this.props.article.title}</li>);
+        }
+    });
+
+    var RxArticleList = React.createClass({
+        render: function () {
+            return (
+                <ul>
+                    {this.props.articles.map(function (result, key) {
+                        return (<RxArticle article = {result} />);
+                    })}
+                </ul>
+            );
+        }
+    });
+
+    var RxLoadMore = React.createClass({
+        onClick: function (){
+            this.props.clickHandler();
+        },
+        render: function () {
+            return (
+                    <a href="#" onClick={this.onClick}>Загрузить ещё</a>
+            );
+        }
+    });
+
+    var RxPage = React.createClass({
+        getInitialState: function () {
+            return {
+                loaded: false,
+                page: 1,
+                articles: []
+            };
+        },
+        componentDidMount: function () {
+            var articlesLoaded = window.data.collections.articles.fetch({
+                data: {
+                    page: this.state.page
+                }
+            });
+
+            articlesLoaded.done(function () {
+                this.setState({
+                    loaded: true,
+                    articles: window.data.collections.articles.toJSON()
+                });
+            }.bind(this));
+        },
+        onLoadMoreClick: function () {
+            var page = this.state.page + 1;
+
+            var articlesLoaded = window.data.collections.articles.fetch({
+                data: {
+                    page: page
+                }
+            });
+
+            articlesLoaded.done(function () {
+                var articles = this.state.articles.concat(window.data.collections.articles.toJSON());
+
+                this.setState({
+                    loaded: true,
+                    page: page,
+                    articles: articles
+                });
+            }.bind(this));
+        },
+        render: function () {
+            if (!this.state.loaded) {
+                return (<span>Загрузка...</span>);
+            }
+
+            var loadMore = this.state.loaded ? <RxLoadMore clickHandler={this.onLoadMoreClick} /> : false;
+
+            return (
+                <div>
+                    <RxArticleList articles={this.state.articles} />
+                    {loadMore}
+                </div>
+            );
+        }
+    });
+
+    React.render(<RxPage />, document.getElementById('container'));
+</script>
+</body>
 </html>

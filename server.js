@@ -14,7 +14,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/api/articles', function (req, res) {
-    var page = 1;
+    var page = parseInt(req.query.page) || 1;
     var articles = _.range(5).map(function (x, i) {
         return {
             author: 'Author #' + page,
