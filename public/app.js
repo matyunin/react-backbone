@@ -8,8 +8,6 @@ window.data = {
     collections: {}
 };
 
-window.deferred = {};
-
 window.schema.models.Article = Backbone.Model.extend({
     defaults: {
         "author": "n/a",
