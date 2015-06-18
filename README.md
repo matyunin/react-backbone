@@ -1,5 +1,5 @@
 # react-backbone
-Sandbox: using react with backbone
+Sandbox: using react with backbone. Models and collections stored in global `window` object.
 
 ### Usage
 After cloning this repo and `npm install` + `bower install`:
